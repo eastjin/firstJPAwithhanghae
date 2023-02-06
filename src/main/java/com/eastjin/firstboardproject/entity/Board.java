@@ -28,18 +28,18 @@ public class Board extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-    public Board(String title, String username, String userpassword, String contents) {
-        this.title = title;
-        this.username = username;
-        this.userpassword = userpassword;
-        this.contents = contents;
-    }
 
     public Board(BoardRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.userpassword = requestDto.getUserpassword();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+    }
+    public Board(String title, String username, String userpassword, String contents) {
+        this.title = title;
+        this.username = username;
+        this.userpassword = userpassword;
+        this.contents = contents;
     }
 
     public void update(BoardRequestDto requestDto) {

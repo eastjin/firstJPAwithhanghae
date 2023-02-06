@@ -30,4 +30,10 @@ public class BoardService {
         return boardRepository.findAllByOrderByModifiedAtDesc();
     }
 
+    public Board getBoard_Dtl(long n) {
+        Board board = boardRepository.findById(n).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        return board;
+    }
 }

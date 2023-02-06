@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
-@EnableJpaAuditing
 @EntityListeners(AuditingEntityListener.class)
 public class Timestamped {
 
