@@ -36,4 +36,16 @@ public class BoardService {
         );
         return board;
     }
+
+    @Transactional
+    public Long update(Long id, BoardRequestDto requestDto) {
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        if (!board.getUserpassword().equals(requestDto.getUserpassword())){
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
+        board.update(requestDto);
+        return board.getId();
+    }
 }

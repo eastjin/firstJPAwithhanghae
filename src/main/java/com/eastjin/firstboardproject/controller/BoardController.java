@@ -40,5 +40,11 @@ public class BoardController {
         return getBoard_Dtl;
     }
 
+    //데이터 업데이트.
+    @PutMapping("/board/elmnt/updt/{id}")
+    public Long updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
+        return boardService.update(id, requestDto);
+    }
+
 
 }
