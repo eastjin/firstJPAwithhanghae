@@ -7,7 +7,6 @@ import com.eastjin.firstboardproject.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,17 +25,13 @@ public class BoardController {
     //데이터 전체조회
     @GetMapping("/board/elmnt")
     public List<BoardResponseDto> getBoard() {
-        List<Board> board_getAll =boardService.getBoard();
-        List<BoardResponseDto> board_responseAll = new ArrayList<>();
-        for(Board board : board_getAll){
-            board_responseAll.add(new BoardResponseDto(board));
-        }
-        return board_responseAll;
+        List<BoardResponseDto> board_getAll =boardService.getBoard();
+        return board_getAll;
     }
 
     @GetMapping("/board/elmnt/{id}")
-    public BoardResponseDto getBoard_Dtl(@PathVariable Board id) {
-        BoardResponseDto getBoard_Dtl = new BoardResponseDto(id);
+    public BoardResponseDto getBoard_Dtl(@PathVariable Long id) {
+        BoardResponseDto getBoard_Dtl = new BoardResponseDto(boardService.getBoard_Dtl(id));
         return getBoard_Dtl;
     }
 

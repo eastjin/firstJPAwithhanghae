@@ -2,14 +2,14 @@ package com.eastjin.firstboardproject.service;
 
 
 import com.eastjin.firstboardproject.dto.BoardRequestDto;
+import com.eastjin.firstboardproject.dto.BoardResponseDto;
 import com.eastjin.firstboardproject.entity.Board;
 import com.eastjin.firstboardproject.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //실제 db 동작방식이 진행되는 부분
@@ -22,47 +22,61 @@ public class BoardService {
 
     @Transactional
     public Board createBoard(BoardRequestDto requestDto) {
+        //값 자체가 없으니 생성자에 담을 인스턴스를 호출.
         Board board = new Board(requestDto);
+        //인스턴스에 값 삽입.
         boardRepository.save(board);
         return board;
     }
 
     @Transactional(readOnly = true)
-    public List<Board> getBoard() {
-        return boardRepository.findAllByOrderByModifiedAtDesc();
+    public List<BoardResponseDto> getBoard() {
+        List<Board> board_getAll = boardRepository.findAllByOrderByModifiedAtDesc();
+
+        //ResponseDto에 담을 ArrayList 생성자 선언.
+        List<BoardResponseDto> board_responseAll = new ArrayList<>();
+        for(Board board : board_getAll){
+            board_responseAll.add(new BoardResponseDto(board));
+        }
+        return board_responseAll;
     }
 
-    public Board getBoard_Dtl(long n) {
-        Board board = boardRepository.findById(n).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
-        return board;
+    public Board getBoard_Dtl(Long id) {
+        return findIdthrow(id);
     }
 
     @Transactional
     public Long update(Long id, BoardRequestDto requestDto) {
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
-        if (!board.getUserpassword().equals(requestDto.getUserpassword())){
-            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
-        }
-        board.update(requestDto);
-        return board.getId();
+        findIdthrow(id);
+        findPasswordthrow(id,requestDto);
+        findIdthrow(id).update(requestDto);
+        return findIdthrow(id).getId();
     }
 
 
 
     @Transactional
     public String deleteBoard(Long id, BoardRequestDto requestDto) {
+        findIdthrow(id);
+        findPasswordthrow(id,requestDto);
+        boardRepository.deleteById(id);
+        return "성공";
+    }
 
+    public Board findIdthrow(long id){
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        return board;
+    }
+
+    public void findPasswordthrow(long id, BoardRequestDto requestDto){
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("findPasswordthrow : 아이디가 존재하지 않습니다.")
         );
         if (!board.getUserpassword().equals(requestDto.getUserpassword())){
             throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
         }
-        boardRepository.deleteById(id);
-        return "성공";
     }
+
 }
