@@ -7,6 +7,8 @@ import com.eastjin.firstboardproject.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -47,5 +49,20 @@ public class BoardService {
         }
         board.update(requestDto);
         return board.getId();
+    }
+
+
+
+    @Transactional
+    public String deleteBoard(Long id, BoardRequestDto requestDto) {
+
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        if (!board.getUserpassword().equals(requestDto.getUserpassword())){
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
+        boardRepository.deleteById(id);
+        return "성공";
     }
 }

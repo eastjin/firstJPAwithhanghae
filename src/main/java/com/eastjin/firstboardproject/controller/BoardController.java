@@ -46,5 +46,12 @@ public class BoardController {
         return boardService.update(id, requestDto);
     }
 
+    //데이터 삭제
+    @DeleteMapping("/board/elmnt/dlt/{id}")
+    public String deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
+
+        return boardService.deleteBoard(id, requestDto);
+    }
+
 
 }
