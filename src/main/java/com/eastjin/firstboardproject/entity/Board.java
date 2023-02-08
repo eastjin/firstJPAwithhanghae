@@ -28,7 +28,7 @@ public class Board extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-
+    //생성자 만들기 requestDto에 연결. id는 Auto여서 필요없음.
     public Board(BoardRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.userpassword = requestDto.getUserpassword();
