@@ -28,8 +28,6 @@ public class UserService {
 
         //Pattern 유효성 검사.
 
-
-
         // 회원 중복 확인
         Optional<Users> found = userRepository.findByUsername(username);
         if (found.isPresent()) {

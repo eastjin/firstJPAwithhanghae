@@ -7,6 +7,7 @@ import com.eastjin.firstboardproject.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -15,9 +16,9 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/board/elmnt")
-    public BoardResponseDto createBoard(@RequestBody BoardRequestDto requestDto) {
+    public BoardResponseDto createBoard(@RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
         //Board Entity에 requestdto 안의 값들을 받아서 createBoard 작업을 한다.
-        Board board_post =boardService.createBoard(requestDto);
+        Board board_post =boardService.createBoard(requestDto, request);
         BoardResponseDto board_response = new BoardResponseDto(board_post);
         return board_response;
     }
@@ -37,8 +38,8 @@ public class BoardController {
 
     //데이터 업데이트.
     @PutMapping("/board/elmnt/updt/{id}")
-    public Long updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-        return boardService.update(id, requestDto);
+    public Long updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
+        return boardService.update(id, requestDto, request);
     }
 
     //데이터 삭제
