@@ -69,7 +69,8 @@ public class BoardService {
 
 
     @Transactional
-    public String deleteBoard(Long id, BoardRequestDto requestDto) {
+    public String deleteBoard(Long id, BoardRequestDto requestDto,HttpServletRequest request) {
+        userValidation(request);
         checkId(id);
         checkPw(id,requestDto);
         boardRepository.deleteById(id);

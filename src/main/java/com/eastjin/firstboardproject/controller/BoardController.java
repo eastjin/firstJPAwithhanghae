@@ -44,9 +44,9 @@ public class BoardController {
 
     //데이터 삭제
     @DeleteMapping("/board/elmnt/dlt/{id}")
-    public String deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
+    public String deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
 
-        return boardService.deleteBoard(id, requestDto);
+        return boardService.deleteBoard(id, requestDto, request);
     }
 
 
