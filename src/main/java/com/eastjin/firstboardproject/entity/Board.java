@@ -11,6 +11,8 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class Board extends Timestamped {
+    //Board(){}
+
     //제목, 작성자명, 작성 내용, 작성 날짜를 조회하기. 내림차순 정렬
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

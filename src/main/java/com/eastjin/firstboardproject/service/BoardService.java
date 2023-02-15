@@ -42,35 +42,35 @@ public class BoardService {
     }
 
     public Board getBoard_Dtl(Long id) {
-        return findIdthrow(id);
+        return checkId(id);
     }
 
     @Transactional
     public Long update(Long id, BoardRequestDto requestDto) {
-        findIdthrow(id);
-        findPasswordthrow(id,requestDto);
-        findIdthrow(id).update(requestDto);
-        return findIdthrow(id).getId();
+        checkId(id);
+        checkPw(id,requestDto);
+        checkId(id).update(requestDto);
+        return checkId(id).getId();
     }
 
 
 
     @Transactional
     public String deleteBoard(Long id, BoardRequestDto requestDto) {
-        findIdthrow(id);
-        findPasswordthrow(id,requestDto);
+        checkId(id);
+        checkPw(id,requestDto);
         boardRepository.deleteById(id);
         return "성공";
     }
 
-    public Board findIdthrow(long id){
+    public Board checkId(long id){
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
         return board;
     }
 
-    public void findPasswordthrow(long id, BoardRequestDto requestDto){
+    public void checkPw(long id, BoardRequestDto requestDto){
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("findPasswordthrow : 아이디가 존재하지 않습니다.")
         );
