@@ -7,7 +7,6 @@ import com.eastjin.firstboardproject.entity.UserRoleEnum;
 import com.eastjin.firstboardproject.jwt.JwtUtil;
 import com.eastjin.firstboardproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,27 +22,29 @@ public class UserService {
 
     @Transactional
     public void signup(SignupRequestDto signupRequestDto) {
-        String username = signupRequestDto.getUsername();
-        String password = signupRequestDto.getPassword();
+//        String username = signupRequestDto.getUsername();
+//        String password = signupRequestDto.getPassword();
+        //boolean role = signupRequestDto.isAdmin();
 
         //Pattern 유효성 검사.
 
         // 회원 중복 확인
-        Optional<Users> found = userRepository.findByUsername(username);
+        Optional<Users> found = userRepository.findByUsername(signupRequestDto.getUsername());
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
         // 사용자 ROLE 확인
-//        UserRoleEnum role = UserRoleEnum.USER;
-//        if (signupRequestDto.isAdmin()) {
-//            if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-//                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
-//            }
-//            role = UserRoleEnum.ADMIN;
-//        }
+        UserRoleEnum role = UserRoleEnum.USER;
+        if (signupRequestDto.isAdmin()) {
+            if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+            }
+            role = UserRoleEnum.ADMIN;
+        }
 
-        Users user = new Users(username, password);
+        Users user = new Users(signupRequestDto);
+        user.setRole(role);
         userRepository.save(user);
     }
 
@@ -61,7 +62,7 @@ public class UserService {
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(),UserRoleEnum.USER));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(),user.getRole()));
 
     }
 }

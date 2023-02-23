@@ -31,8 +31,7 @@ public class UserController {
     @PostMapping("/signup")
     public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        String test = "SignUp-Success!";
-        return test;
+        return "SignUp-Success!";
     }
 
     @ResponseBody

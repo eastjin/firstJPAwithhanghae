@@ -1,11 +1,14 @@
 package com.eastjin.firstboardproject.entity;
 
+import com.eastjin.firstboardproject.dto.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Users {
@@ -22,15 +25,15 @@ public class Users {
     @Column(nullable = false)
     private String password;
 
-//    @Column(nullable = false)
-//    @Enumerated(value = EnumType.STRING)
-//    private UserRoleEnum role;
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
 
-    public Users(String username, String password) {
-        this.username = username;
-        this.password = password;
-        //this.role = role;
+    public Users(SignupRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.password = requestDto.getPassword();
+        this.role = requestDto.isAdmin() ? UserRoleEnum.ADMIN : UserRoleEnum.USER;
     }
 
 }

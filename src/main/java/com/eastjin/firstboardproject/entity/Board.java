@@ -2,16 +2,18 @@ package com.eastjin.firstboardproject.entity;
 
 
 import com.eastjin.firstboardproject.dto.BoardRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor
 public class Board extends Timestamped {
-    //Board(){}
 
     //제목, 작성자명, 작성 내용, 작성 날짜를 조회하기. 내림차순 정렬
     @Id
@@ -29,6 +31,10 @@ public class Board extends Timestamped {
 
     @Column(nullable = false)
     private String contents;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Comments> comments = new ArrayList<>();
 
     //생성자 만들기 requestDto에 연결. id는 Auto여서 필요없음.
     public Board(BoardRequestDto requestDto) {

@@ -4,6 +4,7 @@ package com.eastjin.firstboardproject.service;
 import com.eastjin.firstboardproject.dto.BoardRequestDto;
 import com.eastjin.firstboardproject.dto.BoardResponseDto;
 import com.eastjin.firstboardproject.entity.Board;
+import com.eastjin.firstboardproject.entity.UserRoleEnum;
 import com.eastjin.firstboardproject.entity.Users;
 import com.eastjin.firstboardproject.jwt.JwtUtil;
 import com.eastjin.firstboardproject.repository.BoardRepository;
@@ -58,23 +59,28 @@ public class BoardService {
 
     @Transactional
     public Long update(Long id, BoardRequestDto requestDto,HttpServletRequest request) {
-        //토큰 실패하면 return 반환
-        userValidation(request);
-        checkId(id);
-        checkPw(id,requestDto);
-        checkId(id).update(requestDto);
-        return checkId(id).getId();
+        if (userValidation(request)) { // 사용자 권한 검증
+            checkId(id);
+            checkPw(id, requestDto);
+            checkId(id).update(requestDto);
+            return checkId(id).getId();
+        } else {
+            throw new IllegalArgumentException("ADMIN 권한이 없습니다.");
+        }
     }
 
 
 
     @Transactional
     public String deleteBoard(Long id, BoardRequestDto requestDto,HttpServletRequest request) {
-        userValidation(request);
-        checkId(id);
-        checkPw(id,requestDto);
-        boardRepository.deleteById(id);
-        return "성공";
+        if (userValidation(request)) { // 사용자 권한 검증
+            checkId(id);
+            checkPw(id, requestDto);
+            boardRepository.deleteById(id);
+            return "성공";
+        } else {
+            throw new IllegalArgumentException("ADMIN 권한이 없습니다.");
+        }
     }
 
     public Board checkId(long id){
@@ -103,7 +109,7 @@ public class BoardService {
         if (token != null) {
             // Token 검증
             if (jwtUtil.validateToken(token)) { // 토큰에서 사용자 정보 가져오기 - 사용자가 존재하는지도 이미 여기서 검증!
-                // 근데 이건 사용자 존재여부 검증임. 이 사용자가 게시글 작성자랑 같은지 확인하는건 별개 문제.
+                // 사용자 존재여부 검증임. 이 사용자가 게시글 작성자랑 같은지 확인하는건 별개 문제.
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
@@ -111,7 +117,7 @@ public class BoardService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             // token에서 검사한 사용자와 게시글 작성자가 같은지 알고싶다면- token subject에 username 들어감. 이걸 가져오고 싶음.
-            valid = claims.getSubject().equals(user.getUsername());
+            valid = user.getRole() == UserRoleEnum.ADMIN || user.getUsername().equals(user.getUsername());
         }
         return valid;
     }
